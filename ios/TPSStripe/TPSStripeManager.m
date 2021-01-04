@@ -298,15 +298,21 @@ void initializeTPSPaymentNetworksWithConditionalMappings() {
 
 RCT_EXPORT_MODULE();
 
-RCT_EXPORT_METHOD(init:(NSDictionary *)options errorCodes:(NSDictionary *)errors) {
+RCT_EXPORT_METHOD(init:(NSDictionary *)options errorCodes:(NSDictionary *)errors
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject) {
     publishableKey = options[@"publishableKey"];
     merchantId = options[@"merchantId"];
     errorCodes = errors;
     [Stripe setDefaultPublishableKey:publishableKey];
+    resolve(nil);
 }
 
-RCT_EXPORT_METHOD(setStripeAccount:(NSString *)_stripeAccount) {
+RCT_EXPORT_METHOD(setStripeAccount:(NSString *)_stripeAccount
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject) {
     stripeAccount = _stripeAccount;
+    resolve(nil);
 }
 
 RCT_EXPORT_METHOD(deviceSupportsApplePay:(RCTPromiseResolveBlock)resolve
@@ -451,6 +457,8 @@ RCT_EXPORT_METHOD(authenticatePaymentIntent:(NSDictionary<NSString*, id> *)untyp
     promiseResolver = resolve;
     promiseRejector = reject;
 
+    // This will attach the refreshed api client to the payment handler
+    [self newAPIClient];
     // From example in step 3 of https://stripe.com/docs/payments/payment-intents/ios#manual-confirmation-ios
     [[STPPaymentHandler sharedHandler] handleNextActionForPayment:clientSecret
                                         withAuthenticationContext:self
