@@ -159,6 +159,11 @@ class Stripe {
     return StripeModule.init(options, errorCodes)
   }
 
+  /**
+   * Sets the 
+   * @param {string} stripeAccount The connected account id to use.
+   * @returns {Promise<void>}
+   */
   setStripeAccount = (stripeAccount) => StripeModule.setStripeAccount(stripeAccount)
 
   /**

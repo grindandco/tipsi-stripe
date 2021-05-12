@@ -132,7 +132,7 @@ public class StripeModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void init(@NonNull ReadableMap options, @NonNull ReadableMap errorCodes) {
+  public void init(@NonNull ReadableMap options, @NonNull ReadableMap errorCodes, final Promise promise) {
     ArgCheck.nonNull(options);
 
     String newPubKey = Converters.getStringOrNull(options, PUBLISHABLE_KEY);
@@ -157,6 +157,8 @@ public class StripeModule extends ReactContextBaseJavaModule {
       mErrorCodes = errorCodes;
       getPayFlow().setErrorCodes(errorCodes);
     }
+
+    promise.resolve(null);
   }
 
   private PayFlow getPayFlow() {
@@ -187,13 +189,15 @@ public class StripeModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void setStripeAccount(final String stripeAccount) {
+  public void setStripeAccount(final String stripeAccount, final Promise promise) {
     ArgCheck.notEmptyString(mPublicKey);
     if (stripeAccount == null) {
       mStripe = new Stripe(getReactApplicationContext(), mPublicKey);
     } else {
       mStripe = new Stripe(getReactApplicationContext(), mPublicKey, stripeAccount);
     }
+
+    promise.resolve(null);
   }
 
   @ReactMethod
